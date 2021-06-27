@@ -8,6 +8,7 @@ import cors from "cors";
 //Routes
 import usersRoutes from "./mcr/users.routes.js";
 import mediaRoutes from "./mcr/media.routes.js";
+import chatRoutes from "./mcr/chats.routes.js";
 
 //init
 const app = express();
@@ -21,6 +22,7 @@ app.use(cors());
 //Routes
 app.use("/users", usersRoutes);
 app.use("/media", mediaRoutes);
+app.use("/chat", chatRoutes);
 
 //root
 app.get("/", (req, res) => {

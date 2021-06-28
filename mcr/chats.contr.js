@@ -11,32 +11,37 @@ import Chats from "./chats.model.js";
 
 const model = Chats;
 
-//WORK IN PROGRESS
-export const getMyChats = async (req, res) => {
-  //user id
-  const id = req.params.id;
-  const filterByName = "saracadmin";
+export const getAllChats = async (req, res) => {
+  const posts = await model.find();
+  try {
+    res.status(201).json(posts);
+  } catch (error) {
+    res.status(401).json({ message: error.message });
+  }
+};
 
-  //Get all chats that id participates in
-  const chats = model.find({ $all: { name: filterByName } });
+export const getMyChats = async (req, res) => {
+  const usersArray = req.body.users;
+
+  const chats = await model.find({ users: { $all: usersArray } });
 
   try {
     res.status(201).json(chats);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(401).json({ message: error.message });
   }
 };
-
 //POST/UPDATE
 export const postToChat = async (req, res) => {
-  const message = req.body.message;
+  const message = req.body;
   const id = req.params.id;
 
   try {
     await model.findByIdAndUpdate(id, {
-      $push: { messages: { message: message } },
+      $push: { messages: message },
     });
-    res.status(201).json("Message added to chat");
+
+    res.status(201).json(message);
   } catch (err) {
     res.status(409).json({ message: err.message });
   }
@@ -44,14 +49,14 @@ export const postToChat = async (req, res) => {
 
 //CREATE NEW CHAT
 export const createChat = async (req, res) => {
-  const post = req.body;
-  const newChat = new model(post);
+  const data = req.body;
+  const newChat = new model(data);
 
   try {
     await newChat.save();
     res.status(201).json(newChat);
-  } catch (error) {
-    res.status(409).json({ messages: error.message });
+  } catch (err) {
+    res.status(409).json({ message: err.message });
   }
 };
 

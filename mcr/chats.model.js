@@ -1,21 +1,14 @@
 import mongoose from "mongoose";
 
 const chatSchema = mongoose.Schema({
-  name: String,
-  users: [
-    {
-      username: String,
-      _id: String,
-    },
-  ],
-  lastUpdated: String,
+  users: [String],
   messages: [
     {
+      by: String,
       message: String,
-      user: String,
       createdAt: {
         type: Date,
-        default: Date.now(),
+        default: new Date(),
       },
     },
   ],
